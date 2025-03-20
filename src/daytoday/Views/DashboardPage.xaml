@@ -1,0 +1,41 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="daytoday.Views.DashboardPage"
+             Title="Pulpit">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="20" Padding="15">
+            <!-- Karta statystyk -->
+            <Frame BackgroundColor="#2196F3" Padding="15">
+                <VerticalStackLayout>
+                    <Label Text="Dzisiejsze statystyki" 
+                           TextColor="White" 
+                           FontSize="18"
+                           FontAttributes="Bold"/>
+                    <Label Text="✔ Ukończone zadania: 5" 
+                           TextColor="White"/>
+                    <Label Text="⏳ Czas pracy: 6h 23m" 
+                           TextColor="White"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Szybkie akcje -->
+            <Grid ColumnDefinitions="*,*" RowDefinitions="*,*" ColumnSpacing="10" RowSpacing="10">
+                <Button Text="Nowe zadanie" 
+                        BackgroundColor="#4CAF50"
+                        TextColor="White"
+                        Clicked="GoToTasks"/>
+
+                <Button Grid.Column="1" 
+                        Text="Kalendarz"
+                        BackgroundColor="#FF9800"
+                        TextColor="White"
+                        Clicked="GoToCalendar"/>
+            </Grid>
+
+            <!-- Lista aktywnych zadań -->
+            <Label Text="Aktywne zadania:" FontSize="16"/>
+            
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
