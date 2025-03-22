@@ -3,28 +3,36 @@
              x:Class="daytoday.Views.TasksPage"
              Title="Zadania">
 
-    <Grid RowDefinitions="Auto,*,Auto">
+    <Grid RowDefinitions="Auto,*,Auto" Padding="10">
         <!-- Wyszukiwarka -->
         <SearchBar Grid.Row="0" 
                    Placeholder="Szukaj zadań..."
-                   Margin="10"/>
+                   Margin="0,0,0,10"
+                   BackgroundColor="#E0E0E0"
+                   PlaceholderColor="#757575"
+                   TextColor="Black"/>
 
         <!-- Lista zadań -->
-        <CollectionView Grid.Row="1">
-            <CollectionView.ItemsSource>
-                <x:Array Type="{x:Type x:String}">
-                    <x:String>✅ Zrobić nawigację w MAUI</x:String>
-                    <x:String>⏳ Napisać testy jednostkowe</x:String>
-                    <x:String>🔴 Spotkanie z klientem (pilne!)</x:String>
-                </x:Array>
-            </CollectionView.ItemsSource>
+        <CollectionView x:Name="TasksCollectionView" Grid.Row="1" Margin="0,0,0,10">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame BackgroundColor="#021709" CornerRadius="10" Padding="10" Margin="0,0,0,10">
+                        <VerticalStackLayout>
+                            <Label Text="{Binding Title}" FontSize="16" FontAttributes="Bold"/>
+                            <Label Text="{Binding Category}" FontSize="14" TextColor="Gray"/>
+                            <Label Text="{Binding Time}" FontSize="14" TextColor="Gray"/>
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
         </CollectionView>
 
         <!-- Przycisk dodawania -->
         <Button Grid.Row="2" 
                 Text="+ Dodaj nowe zadanie" 
-                Margin="10"
                 BackgroundColor="#4CAF50"
-                TextColor="White"/>
+                TextColor="White"
+                CornerRadius="10"
+                HeightRequest="50"/>
     </Grid>
 </ContentPage>
