@@ -65,6 +65,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\daytoday.Core\daytoday.Core.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <Compile Update="Views\ProjectsPage.xaml.cs">
 	    <DependentUpon>ProjectsPage.xaml</DependentUpon>
 	  </Compile>
