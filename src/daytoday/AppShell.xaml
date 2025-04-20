@@ -26,6 +26,12 @@
         Route="Dashboard"/>
 
     <ShellContent 
+    Title="Projekty"
+    Icon="dashboard.png"
+    ContentTemplate="{DataTemplate views:ProjectsPage}"
+    Route="Projects"/>
+
+    <ShellContent 
         Title="Zadania"
         Icon="tasks.png"
         ContentTemplate="{DataTemplate views:TasksPage}"

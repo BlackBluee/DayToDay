@@ -7,7 +7,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F61E1B9E-005
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{3B22F015-FAFE-4BB5-8B8D-CD1E907B775B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "daytoday", "src\daytoday\daytoday.csproj", "{D3891F98-D86D-44DF-979A-3E28CB98D3D3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "daytoday.Maui", "src\daytoday\daytoday.Maui.csproj", "{D3891F98-D86D-44DF-979A-3E28CB98D3D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "daytoday.API", "daytoday.API\daytoday.API.csproj", "{3A0F70DF-F830-4088-8BDC-EC5E82787EB1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,6 +21,10 @@ Global
 		{D3891F98-D86D-44DF-979A-3E28CB98D3D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3891F98-D86D-44DF-979A-3E28CB98D3D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3891F98-D86D-44DF-979A-3E28CB98D3D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A0F70DF-F830-4088-8BDC-EC5E82787EB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A0F70DF-F830-4088-8BDC-EC5E82787EB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A0F70DF-F830-4088-8BDC-EC5E82787EB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A0F70DF-F830-4088-8BDC-EC5E82787EB1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -26,5 +32,9 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{3B22F015-FAFE-4BB5-8B8D-CD1E907B775B} = {F61E1B9E-0057-4652-822A-007D8142A841}
 		{D3891F98-D86D-44DF-979A-3E28CB98D3D3} = {F61E1B9E-0057-4652-822A-007D8142A841}
+		{3A0F70DF-F830-4088-8BDC-EC5E82787EB1} = {F61E1B9E-0057-4652-822A-007D8142A841}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FFA8EE2E-5BBE-42F8-BC86-2B4EF7A6D1B1}
 	EndGlobalSection
 EndGlobal
