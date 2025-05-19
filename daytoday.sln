@@ -13,6 +13,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "daytoday.Maui", "src\daytod
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "daytoday.API", "daytoday.API\daytoday.API.csproj", "{3A0F70DF-F830-4088-8BDC-EC5E82787EB1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D3891F98-D86D-44DF-979A-3E28CB98D3D3} = {D3891F98-D86D-44DF-979A-3E28CB98D3D3}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "daytoday.Core", "daytoday.Core\daytoday.Core.csproj", "{7C911FDE-ECF5-41EF-BF96-1AC8CCE4F25F}"
 EndProject

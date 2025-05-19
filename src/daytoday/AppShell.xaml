@@ -19,34 +19,14 @@
         </ResourceDictionary>
     </Shell.Resources>
 
-    <ShellContent 
-        Title="Pulpit"
-        Icon="dashboard.png"
-        ContentTemplate="{DataTemplate views:DashboardPage}"
-        Route="Dashboard"/>
-
-    <ShellContent 
-    Title="Projekty"
-    Icon="dashboard.png"
-    ContentTemplate="{DataTemplate views:ProjectsPage}"
-    Route="Projects"/>
-
-    <ShellContent 
-        Title="Zadania"
-        Icon="tasks.png"
-        ContentTemplate="{DataTemplate views:TasksPage}"
-        Route="Tasks"/>
-
-    <ShellContent 
-        Title="Kalendarz"
-        Icon="calendar.png"
-        ContentTemplate="{DataTemplate views:CalendarPage}"
-        Route="Calendar"/>
-
-    <ShellContent 
-        Title="Ustawienia"
-        Icon="settings.png"
-        ContentTemplate="{DataTemplate views:SettingsPage}"
-        Route="Settings"/>
+    <Shell.FlyoutHeader>
+        <StackLayout Padding="20" BackgroundColor="#2C3E50">
+            <Label x:Name="LoginInfoLabel"
+               Text="Nie zalogowano"
+               TextColor="White"
+               FontAttributes="Bold"
+               FontSize="16"/>
+        </StackLayout>
+    </Shell.FlyoutHeader>
 
 </Shell>
