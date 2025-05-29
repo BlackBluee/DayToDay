@@ -1,10 +1,15 @@
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using daytoday.Core.Models;
 using daytoday.API.Data;
+using daytoday.API.Core;
+using daytoday.API.Mediator;
+using daytoday.API.Commands;
+using daytoday.API.Middleware;
+using daytoday.API.Behaviors;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,11 +43,52 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+// Dodaj CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Mediator i Pipeline Behaviors
+builder.Services.AddScoped<IMediator, Mediator>();
+builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+builder.Services.AddScoped<IRequestHandler<CreateProjectCommand, Guid>, CreateProjectCommandHandler>();
+
+
+// Jeśli potrzebujesz tych handlerów, odkomentuj:
+// builder.Services.AddScoped<IRequestHandler<CreateUserCommand, Guid>, CreateUserCommandHandler>();
+// builder.Services.AddScoped<IRequestHandler<GetUserByIdQuery, UserDto>, GetUserByIdQueryHandler>();
+// builder.Services.AddScoped<IValidator<CreateUserCommand>, CreateUserCommandValidator>();
+// builder.Services.AddScoped<INotificationHandler<UserCreatedNotification>, UserCreatedHandler>();
+
 var app = builder.Build();
+
+// Middleware
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+// Dodaj middleware do obsługi wyjątków
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+// Włącz CORS
+app.UseCors("AllowAll");
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
