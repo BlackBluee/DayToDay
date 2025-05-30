@@ -2,7 +2,7 @@
 using daytoday.API.Core;
 using daytoday.API.Data;
 
-namespace daytoday.API.Commands
+namespace daytoday.API.Mediator.Commands.project
 {
     public class CreateProjectCommand : IRequest<Guid>
     {

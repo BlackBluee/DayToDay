@@ -7,9 +7,9 @@ using daytoday.Core.Models;
 using daytoday.API.Data;
 using daytoday.API.Core;
 using daytoday.API.Mediator;
-using daytoday.API.Commands;
 using daytoday.API.Middleware;
 using daytoday.API.Behaviors;
+using daytoday.API.Mediator.Commands.project;
 
 var builder = WebApplication.CreateBuilder(args);
 
