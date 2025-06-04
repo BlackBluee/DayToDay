@@ -2,6 +2,9 @@
 using daytoday.API.Mediator.Commands.project;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using daytoday.Core.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace daytoday.API.Controllers
 {
@@ -17,31 +20,32 @@ namespace daytoday.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetProjects()
+        public async Task<IActionResult> GetProjectsAsync()
         {
-            return Ok("List of projects will be returned here.");
+            var projects = await _mediator.Send<GetAllProjectCommand, List<ProjectDto>>(new GetAllProjectCommand());
+            return Ok(projects);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProject([FromBody] CreateProjectRequest request)
+        public async Task<IActionResult> CreateProject([FromBody] CreateProjectCommand command)
         {
-            var command = new CreateProjectCommand
-            {
-                Name = request.Name
-            };
-
-            var result = await _mediator.Send<CreateProjectCommand, Guid>(command);
-
-            return CreatedAtAction(nameof(GetProjects), new { id = result }, result);
+            var projectId = await _mediator.Send<CreateProjectCommand, Guid>(command);
+            return CreatedAtAction(nameof(GetProjectById), new { Id = projectId }, projectId);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetProjectById(Guid id)
+        public async Task<IActionResult> GetProjectById(Guid id)
         {
-            return Ok($"Project with ID {id} will be returned here.");
+            var project = await _mediator.Send<GetProjectCommand, ProjectDto>(new GetProjectCommand { Id = id });
+            if (project == null)
+            {
+                return NotFound($"Projekt o ID {id} nie został znaleziony.");
+            }
+            return Ok(project);
         }
 
         [HttpPut("{id}")]
+
         public IActionResult UpdateProject(Guid id, [FromBody] CreateProjectRequest request)
         {
             return Ok($"Project with ID {id} will be updated with name {request.Name}.");
@@ -53,6 +57,7 @@ namespace daytoday.API.Controllers
             return Ok($"Project with ID {id} will be deleted.");
         }
     }
+    
 
 
     }

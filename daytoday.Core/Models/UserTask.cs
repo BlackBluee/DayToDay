@@ -10,7 +10,7 @@ namespace daytoday.Core.Models
 
     public class UserTask
     {
-        public int Id { get; set; }
+        public int Id { get; set; } 
         public string Title { get; set; }
         public string Category { get; set; }
         public string Description { get; set; }
@@ -22,7 +22,7 @@ namespace daytoday.Core.Models
         public DateTime Due { get; set; }
         public DateTime Updated { get; set; } = DateTime.Now;
 
-        public DateTime Completed { get; set; } = DateTime.Now;
+        public DateTime Completed { get; set; } 
         public string Time { get; set; }
 
         public string UserId { get; set; }

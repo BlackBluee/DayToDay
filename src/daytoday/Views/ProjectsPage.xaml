@@ -2,11 +2,59 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="daytoday.Views.ProjectsPage"
-             Title="ProjectsPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Title="Projekty">
+    <Grid RowDefinitions="Auto,*,Auto" Padding="20">
+        <VerticalStackLayout Grid.Row="0" Margin="0,0,0,10">
+            <Label Text="Twoje projekty" FontSize="24" FontAttributes="Bold" Margin="0,0,0,5"/>
+            <Label Text="Zarządzaj swoimi projektami" FontSize="16" TextColor="Gray"/>
+        </VerticalStackLayout>
+
+        <RefreshView Grid.Row="1" x:Name="ProjectsRefreshView" IsRefreshing="{Binding IsRefreshing}">
+            <CollectionView x:Name="ProjectsCollectionView" 
+                            SelectionMode="Single" 
+                            EmptyView="Nie masz jeszcze żadnych projektów."
+                            SelectionChanged="OnSelectionChanged">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Margin="0,5" Padding="15" BorderColor="LightGray" CornerRadius="10">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <VerticalStackLayout Grid.Column="0" Spacing="5">
+                                    <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold"/>
+                                    <Label Text="{Binding Description}" FontSize="14" LineBreakMode="TailTruncation" MaxLines="2"/>
+                                    <Label Text="{Binding GitHubUrl}" FontSize="12" TextColor="Blue" TextDecorations="Underline">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=OpenGitHubCommand}" 
+                                                                  CommandParameter="{Binding}"/>
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                </VerticalStackLayout>
+                                <HorizontalStackLayout Grid.Column="1" Spacing="5" VerticalOptions="Center">
+                                    <Button Text="Edytuj" 
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=EditCommand}"
+                                            CommandParameter="{Binding}"
+                                            BackgroundColor="#3498db" 
+                                            TextColor="White"/>
+                                    <Button Text="Usuń" 
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=DeleteCommand}"
+                                            CommandParameter="{Binding}" 
+                                            BackgroundColor="#e74c3c" 
+                                            TextColor="White"/>
+                                </HorizontalStackLayout>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+        <Button Grid.Row="2" 
+                Text="Dodaj nowy projekt" 
+                Command="{Binding AddCommand}"
+                BackgroundColor="#2ecc71" 
+                TextColor="White"
+                FontAttributes="Bold"
+                HeightRequest="50"
+                CornerRadius="25"
+                Margin="0,15,0,0"/>
+    </Grid>
 </ContentPage>

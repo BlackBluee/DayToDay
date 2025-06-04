@@ -9,7 +9,7 @@ namespace daytoday
         public AppShell()
         {
             InitializeComponent();
-            //Preferences.Remove("jwt_token");
+            
             
             var token = Preferences.Get("jwt_token", "");
             if (string.IsNullOrWhiteSpace(token))

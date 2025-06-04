@@ -7,6 +7,7 @@ namespace daytoday
     {
         public static MauiApp CreateMauiApp()
         {
+            Preferences.Remove("jwt_token");
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
@@ -20,6 +21,7 @@ namespace daytoday
                 client.BaseAddress = new Uri("https://localhost:7157"); 
             });
             builder.Services.AddSingleton<AuthService>();
+            builder.Services.AddSingleton<ProjectService>();
 
 
 #if DEBUG

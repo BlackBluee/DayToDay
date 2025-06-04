@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace daytoday.API.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -162,9 +162,10 @@ namespace daytoday.API.Migrations
                 name: "Projects",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    GitHubUrl = table.Column<string>(type: "text", nullable: false),
                     UserId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
@@ -176,6 +177,36 @@ namespace daytoday.API.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CalendarEvents",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    Location = table.Column<string>(type: "text", nullable: false),
+                    IsAllDay = table.Column<bool>(type: "boolean", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    ProjectId = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CalendarEvents", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CalendarEvents_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CalendarEvents_Projects_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "Projects",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -194,7 +225,8 @@ namespace daytoday.API.Migrations
                     Updated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Completed = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Time = table.Column<string>(type: "text", nullable: false),
-                    UserId = table.Column<string>(type: "text", nullable: false)
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    ProjectId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -205,6 +237,11 @@ namespace daytoday.API.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserTasks_Projects_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "Projects",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -245,9 +282,24 @@ namespace daytoday.API.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_CalendarEvents_ProjectId",
+                table: "CalendarEvents",
+                column: "ProjectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CalendarEvents_UserId",
+                table: "CalendarEvents",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Projects_UserId",
                 table: "Projects",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserTasks_ProjectId",
+                table: "UserTasks",
+                column: "ProjectId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserTasks_UserId",
@@ -274,13 +326,16 @@ namespace daytoday.API.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Projects");
+                name: "CalendarEvents");
 
             migrationBuilder.DropTable(
                 name: "UserTasks");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Projects");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

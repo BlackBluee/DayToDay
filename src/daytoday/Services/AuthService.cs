@@ -11,6 +11,7 @@ namespace daytoday.Services
     public class AuthService
     {
         private readonly HttpClient _httpClient;
+        private string? _token;
 
         public AuthService(IHttpClientFactory httpClientFactory)
         {
@@ -28,8 +29,11 @@ namespace daytoday.Services
             if (!response.IsSuccessStatusCode)
                 throw new Exception("Login failed");
 
-            var token = await response.Content.ReadFromJsonAsync<string>();
-            return token!;
+            _token = await response.Content.ReadFromJsonAsync<string>();
+            Preferences.Set("jwt_token", _token); // Zapisz token w Preferences
+            return _token!;
         }
+
+        public string? GetToken() => Preferences.Get("jwt_token", null); // Pobierz token z Preferences
     }
 }

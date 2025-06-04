@@ -10,10 +10,11 @@ using daytoday.API.Mediator;
 using daytoday.API.Middleware;
 using daytoday.API.Behaviors;
 using daytoday.API.Mediator.Commands.project;
+using daytoday.Core.DTOs;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// PostgreSQL + Identity
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -21,7 +22,6 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-// JWT Auth
 var jwtKey = builder.Configuration["Jwt:Key"];
 var jwtIssuer = builder.Configuration["Jwt:Issuer"];
 
@@ -43,7 +43,8 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// Dodaj CORS
+
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder =>
@@ -54,6 +55,7 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -63,9 +65,12 @@ builder.Services.AddScoped<IMediator, Mediator>();
 builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 builder.Services.AddScoped<IRequestHandler<CreateProjectCommand, Guid>, CreateProjectCommandHandler>();
+builder.Services.AddScoped<IRequestHandler<GetAllProjectCommand, List<ProjectDto>>, GetAllProjectCommandHandler>();
+builder.Services.AddScoped<IRequestHandler<GetProjectCommand, ProjectDto>, GetProjectCommandHandler>();
+// builder.Services.AddScoped<IRequestHandler<UpdateProjectCommand, ProjectDto>, UpdateProjectCommandHandler>();
+// builder.Services.AddScoped<IRequestHandler<DeleteProjectCommand, bool>, DeleteProjectCommandHandler>();
 
-
-// Jeśli potrzebujesz tych handlerów, odkomentuj:
+// Handlery
 // builder.Services.AddScoped<IRequestHandler<CreateUserCommand, Guid>, CreateUserCommandHandler>();
 // builder.Services.AddScoped<IRequestHandler<GetUserByIdQuery, UserDto>, GetUserByIdQueryHandler>();
 // builder.Services.AddScoped<IValidator<CreateUserCommand>, CreateUserCommandValidator>();
@@ -76,14 +81,12 @@ var app = builder.Build();
 // Middleware
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    //app.UseSwagger();
+    //app.UseSwaggerUI();
 }
 
-// Dodaj middleware do obsługi wyjątków
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-// Włącz CORS
 app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
