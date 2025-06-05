@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using daytoday.API.Core;
 using daytoday.API.Mediator.Commands.task;
+using daytoday.Core.DTOs;
 
 namespace daytoday.API.Controllers
 {
@@ -15,40 +16,51 @@ namespace daytoday.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetTasks()
+        public async Task<IActionResult> GetTaskAsync()
         {
-            return Ok("List of tasks will be returned here.");
+            var tasks = await _mediator.Send<GetAllTaskCommand, List<TaskDto>>(new GetAllTaskCommand());
+            return Ok(tasks);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateTask([FromBody] CreateTaskRequest request)
+        public async Task<IActionResult> CreateTask([FromBody] CreateTaskCommand command)
         {
-            var command = new CreateTaskCommand
-            {
-                Title = request.Title
-            };
-
-            var result = await _mediator.Send<CreateTaskCommand, Guid>(command);
-
-            return CreatedAtAction(nameof(GetTasks), new { id = result }, result);
+            var taskId = await _mediator.Send<CreateTaskCommand, TaskDto>(command);
+            return CreatedAtAction(nameof(GetTaskById), new { id = taskId.Id }, taskId);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetTaskById(Guid id)
+        public async Task<IActionResult> GetTaskById(Guid id)
         {
-            return Ok($"Task with ID {id} will be returned here.");
+            var task = await _mediator.Send<GetTaskCommand, TaskDto>(new GetTaskCommand { Id = id });
+            if (task == null)
+            {
+                return NotFound($"Task with ID {id} not found.");
+            }
+            return Ok(task);
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateTask(Guid id, [FromBody] CreateTaskRequest request)
+        public async Task<IActionResult> UpdateTask(Guid id, [FromBody] UpdateTaskCommand command)
         {
-            return Ok($"Task with ID {id} will be updated with Title {request.Title}.");
+            command.Id = id;
+            var updatedTask = await _mediator.Send<UpdateTaskCommand, TaskDto>(command);
+            if (updatedTask == null)
+            {
+                return NotFound($"Task with ID {id} not found.");
+            }
+            return Ok(updatedTask);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteTask(Guid id)
+        public async Task<IActionResult> DeleteTask(Guid id)
         {
-            return Ok($"Task with ID {id} will be deleted.");
+            var deletedTask = await _mediator.Send<DeleteTaskCommand, TaskDto>(new DeleteTaskCommand { Id = id });
+            if (deletedTask == null)
+            {
+                return NotFound($"Task with ID {id} not found.");
+            }
+            return Ok("Projekt usunięty");
         }
     }
 }

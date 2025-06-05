@@ -1,43 +1,74 @@
 ﻿using daytoday.Core.Models;
 using daytoday.API.Core;
 using daytoday.API.Data;
+using Microsoft.AspNetCore.Http;
+using System.IdentityModel.Tokens.Jwt;
+using daytoday.Core.DTOs;
 
 namespace daytoday.API.Mediator.Commands.task
 {
-    public class CreateTaskCommand : IRequest<Guid>
+    public class CreateTaskCommand : IRequest<TaskDto>
     {
         public string Title { get; set; }
-        public string UserId { get; set; }
+        public string Category { get; set; }
+        public string Description { get; set; }
+        public string Status { get; set; }
+        public string Priority { get; set; }
     }
 
 
-    public class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, Guid>
+    public class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, TaskDto>
     {
         private readonly ApplicationDbContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public CreateTaskCommandHandler(ApplicationDbContext context)
+        public CreateTaskCommandHandler(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<Guid> HandleAsync(CreateTaskCommand request, CancellationToken cancellationToken)
+        public async Task<TaskDto> HandleAsync(CreateTaskCommand request, CancellationToken cancellationToken)
         {
+            var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString()?.Replace("Bearer ", "");
+            if (string.IsNullOrEmpty(token))
+                throw new UnauthorizedAccessException("Brak tokenu w nagłówku.");
+
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(token);
+
+            var userId = jwtToken.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+            if (string.IsNullOrEmpty(userId))
+                throw new UnauthorizedAccessException("Brak ID użytkownika w tokenie.");
+
             var task = new UserTask
             {
                 Title = request.Title,
-                UserId = request.UserId
+                Category = request.Category ?? string.Empty,
+                Description = request.Description ?? string.Empty,
+                Status = request.Status ?? "Pending",
+                Priority = request.Priority ?? "Normal",
+                Created = DateTime.Now,
+                Due = DateTime.Now.AddDays(7), 
+                Updated = DateTime.Now,
+                UserId = userId
             };
 
             _context.UserTasks.Add(task);
             await _context.SaveChangesAsync(cancellationToken);
 
 
-            return Guid.NewGuid();
+            return new TaskDto
+            {
+                Id = task.Id,
+                Title = task.Title,
+                Category = task.Category,
+                Description = task.Description,
+                Status = task.Status,
+                Priority = task.Priority
+            };
         }
     }
-    public class CreateTaskRequest
-    {
-        public string Title { get; set; }
-    }
+    
 
 }
