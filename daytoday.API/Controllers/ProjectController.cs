@@ -1,10 +1,7 @@
 ﻿using daytoday.API.Core;
 using daytoday.API.Mediator.Commands.project;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using daytoday.Core.DTOs;
-using Microsoft.AspNetCore.Authorization;
 
 namespace daytoday.API.Controllers
 {

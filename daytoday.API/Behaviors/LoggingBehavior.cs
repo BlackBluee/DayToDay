@@ -1,8 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using daytoday.API.Core;
-using Microsoft.Extensions.Logging;
+﻿using daytoday.API.Core;
 
 namespace daytoday.API.Behaviors
 {

@@ -50,9 +50,5 @@ namespace daytoday.API.Mediator.Commands.project
             return project.Id;
         }
     }
-    public class CreateProjectRequest
-    {
-        public string Name { get; set; }
-    }
 
 }

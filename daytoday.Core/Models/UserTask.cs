@@ -1,11 +1,4 @@
-﻿using daytoday.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace daytoday.Core.Models
+﻿namespace daytoday.Core.Models
 {
 
     public class UserTask

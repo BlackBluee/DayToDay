@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Json;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Net.Http.Json;
 
 namespace daytoday.Services
 {
@@ -30,10 +24,10 @@ namespace daytoday.Services
                 throw new Exception("Login failed");
 
             _token = await response.Content.ReadFromJsonAsync<string>();
-            Preferences.Set("jwt_token", _token); // Zapisz token w Preferences
+            Preferences.Set("jwt_token", _token); 
             return _token!;
         }
 
-        public string? GetToken() => Preferences.Get("jwt_token", null); // Pobierz token z Preferences
+        public string? GetToken() => Preferences.Get("jwt_token", null); 
     }
 }

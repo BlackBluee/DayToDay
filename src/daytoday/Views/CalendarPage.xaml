@@ -1,12 +1,64 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="daytoday.Views.CalendarPage"
-             Title="CalendarPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Title="Kalendarz">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+        <HorizontalStackLayout Grid.Row="0" HorizontalOptions="Center" Spacing="10" Margin="0,10,0,0">
+            <Button Text="&lt;" Command="{Binding PreviousMonthCommand}" WidthRequest="40" />
+            <Label Text="{Binding CurrentMonthYear}" FontSize="20" FontAttributes="Bold" VerticalOptions="Center" />
+            <Button Text="&gt;" Command="{Binding NextMonthCommand}" WidthRequest="40" />
+        </HorizontalStackLayout>
+
+        <RefreshView Grid.Row="1" Command="{Binding RefreshCommand}" IsRefreshing="{Binding IsRefreshing}">
+            <CollectionView x:Name="EventsCollectionView" 
+                            ItemsSource="{Binding Events}"
+                            SelectionMode="Single"
+                            SelectionChanged="OnEventSelected"
+                            EmptyView="Brak wydarzeń w wybranym miesiącu">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="10" ColumnDefinitions="Auto,*,Auto">
+                            <BoxView Grid.Column="0" 
+                                     WidthRequest="4" 
+                                     HeightRequest="40" 
+                                     Color="{StaticResource Primary}" 
+                                     VerticalOptions="Fill" />
+                            <VerticalStackLayout Grid.Column="1" Padding="15,0,0,0" VerticalOptions="Center">
+                                <Label Text="{Binding Name}" FontAttributes="Bold" />
+                                <Label Text="{Binding StartDate, StringFormat='{0:dd.MM.yyyy HH:mm}'}" FontSize="12" TextColor="Gray" />
+                                <Label Text="{Binding Description}" 
+       LineBreakMode="TailTruncation" 
+       MaxLines="1" 
+       IsVisible="{Binding Description, Converter={StaticResource BoolConverter}, ConverterParameter=IsNotNullOrEmpty}" />
+
+
+                            </VerticalStackLayout>
+                            <HorizontalStackLayout Grid.Column="2" VerticalOptions="Center" Spacing="10">
+                                <ImageButton Source="edit.png" 
+                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=EditCommand}"
+                                             CommandParameter="{Binding}" 
+                                             WidthRequest="20" 
+                                             HeightRequest="20" />
+                                <ImageButton Source="delete.png" 
+                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=DeleteCommand}"
+                                             CommandParameter="{Binding}" 
+                                             WidthRequest="20" 
+                                             HeightRequest="20" />
+                            </HorizontalStackLayout>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+        <Button Grid.Row="2" 
+                Text="Dodaj wydarzenie" 
+                Command="{Binding AddCommand}" 
+                HorizontalOptions="Center" 
+                VerticalOptions="End" 
+                Margin="0,0,0,20" />
+    </Grid>
 </ContentPage>

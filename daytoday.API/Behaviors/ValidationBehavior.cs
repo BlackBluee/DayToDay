@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using daytoday.API.Core;
+﻿using daytoday.API.Core;
 using FluentValidation;
 
 namespace daytoday.API.Behaviors

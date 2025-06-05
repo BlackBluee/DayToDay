@@ -12,6 +12,7 @@ using daytoday.API.Behaviors;
 using daytoday.API.Mediator.Commands.project;
 using daytoday.Core.DTOs;
 using daytoday.API.Controllers;
+using daytoday.API.Mediator.Commands.calendarEvent;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -68,9 +69,16 @@ builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavi
 builder.Services.AddScoped<IRequestHandler<CreateProjectCommand, Guid>, CreateProjectCommandHandler>();
 builder.Services.AddScoped<IRequestHandler<GetAllProjectCommand, List<ProjectDto>>, GetAllProjectCommandHandler>();
 builder.Services.AddScoped<IRequestHandler<GetProjectCommand, ProjectDto>, GetProjectCommandHandler>();
-
 builder.Services.AddScoped<IRequestHandler<UpdateProjectCommand, ProjectDto>, UpdateProjectCommandHandler>();
 builder.Services.AddScoped<IRequestHandler<DeleteProjectCommand, ProjectDto>, DeleteProjectCommandHandler>();
+builder.Services.AddScoped<IRequestHandler<CreateCalendarEventCommand, CalendarEventDto>, CreateCalendarEventCommandHandler>();
+builder.Services.AddScoped<IRequestHandler<GetCalendarEventCommand, CalendarEventDto>, GetCalendarEventCommandHandler>();
+builder.Services.AddScoped<IRequestHandler<GetAllCalendarEventCommand, List<CalendarEventDto>>, GetAllCalendarEventCommandHandler>();
+builder.Services.AddScoped<IRequestHandler<UpdateCalendarEventCommand, CalendarEventDto>, UpdateCalendarEventCommandHandler>();
+builder.Services.AddScoped<IRequestHandler<DeleteCalendarEventCommand, CalendarEventDto>, DeleteCalendarEventCommandHandler>();
+
+// Add FluentValidation
+
 
 // Handlery
 // builder.Services.AddScoped<IRequestHandler<CreateUserCommand, Guid>, CreateUserCommandHandler>();

@@ -68,7 +68,7 @@ namespace daytoday
             this.Navigating += AppShell_Navigating;
         }
 
-        private void AppShell_Navigating(object sender, ShellNavigatingEventArgs e)
+        private void AppShell_Navigating(object? sender, ShellNavigatingEventArgs e)
         {
             if (e.Target.Location.OriginalString.Contains("Login"))
                 return;

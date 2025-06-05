@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Net.Http;
-using daytoday.Core.DTOs;
+﻿using daytoday.Core.DTOs;
 using System.Net.Http.Json;
-using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
 
 namespace daytoday.Services

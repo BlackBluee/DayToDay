@@ -4,7 +4,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using daytoday.API.Data;
 using daytoday.Core.Models;
 using daytoday.Core.DTOs;
 

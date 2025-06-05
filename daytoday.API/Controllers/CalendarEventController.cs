@@ -1,6 +1,6 @@
 ﻿using daytoday.API.Core;
 using daytoday.API.Mediator.Commands.calendarEvent;
-using daytoday.API.Mediator.Commands.task;
+using daytoday.Core.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace daytoday.API.Controllers
@@ -16,40 +16,51 @@ namespace daytoday.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetCalendarEvent()
+        public async Task<IActionResult> GetCalendarEventAsync()
         {
-            return Ok("List of CalendarEvent will be returned here.");
+            var calendarEvents = await _mediator.Send<GetAllCalendarEventCommand, List<CalendarEventDto>>(new GetAllCalendarEventCommand());
+            return Ok(calendarEvents);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateCalendarEvent([FromBody] CreateCalendarEventRequest request)
+        public async Task<IActionResult> CreateCalendarEvent([FromBody] CreateCalendarEventCommand command)
         {
-            var command = new CreateCalendarEventCommand
-            {
-                Name = request.Name
-            };
-
-            var result = await _mediator.Send<CreateCalendarEventCommand, Guid>(command);
-
-            return CreatedAtAction(nameof(GetCalendarEvent), new { id = result }, result);
+            var calendarEventId = await _mediator.Send<CreateCalendarEventCommand, CalendarEventDto>(command);
+            return CreatedAtAction(nameof(GetCalendarEventById), new { id = calendarEventId }, calendarEventId);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetCalendarEventById(Guid id)
+        public async Task<IActionResult> GetCalendarEventById(Guid id)
         {
-            return Ok($"CalendarEvent with ID {id} will be returned here.");
+            var calendarEvent = await _mediator.Send<GetCalendarEventCommand, CalendarEventDto>(new GetCalendarEventCommand { Id = id });
+            if (calendarEvent == null)
+            {
+                return NotFound($"Calendar event with ID {id} not found.");
+            }
+            return Ok(calendarEvent);
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateCalendarEvent(Guid id, [FromBody] CreateCalendarEventRequest request)
+        public async Task<IActionResult> UpdateCalendarEvent(Guid id, [FromBody] UpdateCalendarEventCommand command)
         {
-            return Ok($"CalendarEvent with ID {id} will be updated with Title {request.Name}.");
+            command.Id = id; 
+            var updatedCalendarEvent = await _mediator.Send<UpdateCalendarEventCommand, CalendarEventDto>(command);
+            if (updatedCalendarEvent == null)
+            {
+                return NotFound($"Calendar event with ID {id} not found.");
+            }
+            return Ok(updatedCalendarEvent);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteCalendarEvent(Guid id)
+        public async Task<IActionResult> DeleteCalendarEvent(Guid id)
         {
-            return Ok($"CalendarEvent with ID {id} will be deleted.");
+            var deletedCalendarEvent = await _mediator.Send<DeleteCalendarEventCommand, CalendarEventDto>(new DeleteCalendarEventCommand { Id = id });
+            if (deletedCalendarEvent == null)
+            {
+                return NotFound($"Projekt o ID {id} nie został znaleziony.");
+            }
+            return Ok("Projekt usunięty");
         }
 
     }
