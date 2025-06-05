@@ -45,19 +45,24 @@ namespace daytoday.API.Controllers
         }
 
         [HttpPut("{id}")]
-
-        public IActionResult UpdateProject(Guid id, [FromBody] CreateProjectRequest request)
+        public async Task<IActionResult> UpdateProject(Guid id, [FromBody] UpdateProjectCommand command)
         {
-            return Ok($"Project with ID {id} will be updated with name {request.Name}.");
+            command.Id = id; 
+            var updatedProject = await _mediator.Send<UpdateProjectCommand, ProjectDto>(command);
+            return Ok(updatedProject);
         }
+
+       
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteProject(Guid id)
+        public async Task<IActionResult> DeleteProject(Guid id)
         {
-            return Ok($"Project with ID {id} will be deleted.");
+            var deletedProject = await _mediator.Send<DeleteProjectCommand, ProjectDto>(new DeleteProjectCommand { Id = id });
+            if (deletedProject == null)
+            {
+                return NotFound($"Projekt o ID {id} nie został znaleziony.");
+            }
+            return Ok("Projekt usunięty");
         }
     }
-    
-
-
-    }
+}

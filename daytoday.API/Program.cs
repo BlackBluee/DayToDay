@@ -11,6 +11,7 @@ using daytoday.API.Middleware;
 using daytoday.API.Behaviors;
 using daytoday.API.Mediator.Commands.project;
 using daytoday.Core.DTOs;
+using daytoday.API.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -67,8 +68,9 @@ builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavi
 builder.Services.AddScoped<IRequestHandler<CreateProjectCommand, Guid>, CreateProjectCommandHandler>();
 builder.Services.AddScoped<IRequestHandler<GetAllProjectCommand, List<ProjectDto>>, GetAllProjectCommandHandler>();
 builder.Services.AddScoped<IRequestHandler<GetProjectCommand, ProjectDto>, GetProjectCommandHandler>();
-// builder.Services.AddScoped<IRequestHandler<UpdateProjectCommand, ProjectDto>, UpdateProjectCommandHandler>();
-// builder.Services.AddScoped<IRequestHandler<DeleteProjectCommand, bool>, DeleteProjectCommandHandler>();
+
+builder.Services.AddScoped<IRequestHandler<UpdateProjectCommand, ProjectDto>, UpdateProjectCommandHandler>();
+builder.Services.AddScoped<IRequestHandler<DeleteProjectCommand, ProjectDto>, DeleteProjectCommandHandler>();
 
 // Handlery
 // builder.Services.AddScoped<IRequestHandler<CreateUserCommand, Guid>, CreateUserCommandHandler>();
