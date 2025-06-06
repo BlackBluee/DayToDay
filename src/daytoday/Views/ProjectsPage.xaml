@@ -2,59 +2,312 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="daytoday.Views.ProjectsPage"
+             BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource OffBlack}}"
              Title="Projekty">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="FormLabel" TargetType="Label">
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="Margin" Value="0,10,0,5"/>
+            </Style>
+
+            <Style x:Key="FormEntry" TargetType="Entry">
+                <Setter Property="Margin" Value="0,0,0,15"/>
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray600}}"/>
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"/>
+            </Style>
+
+            <Style x:Key="FormEditor" TargetType="Editor">
+                <Setter Property="AutoSize" Value="TextChanges"/>
+                <Setter Property="Margin" Value="0,0,0,15"/>
+                <Setter Property="HeightRequest" Value="100"/>
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray600}}"/>
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"/>
+            </Style>
+
+            <Style x:Key="ActionButton" TargetType="Button">
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="Padding" Value="12,6"/>
+                <Setter Property="Margin" Value="5,0,0,0"/>
+                <Setter Property="CornerRadius" Value="6"/>
+                <Setter Property="HeightRequest" Value="36"/>
+                <Setter Property="WidthRequest" Value="86"/>
+            </Style>
+
+            <Style x:Key="PrimaryActionButton" TargetType="Button">
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="Padding" Value="15,10"/>
+                <Setter Property="CornerRadius" Value="25"/>
+                <Setter Property="HeightRequest" Value="50"/>
+                <Setter Property="BackgroundColor" Value="{StaticResource Primary}"/>
+                <Setter Property="TextColor" Value="White"/>
+            </Style>
+
+            <Style x:Key="ProjectCard" TargetType="Frame">
+                <Setter Property="Padding" Value="18"/>
+                <Setter Property="Margin" Value="0,8"/>
+                <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"/>
+                <Setter Property="CornerRadius" Value="16"/>
+                <Setter Property="HasShadow" Value="True"/>
+            </Style>
+
+            <Style x:Key="GitHubUrlLabel" TargetType="Label">
+                <Setter Property="FontSize" Value="13"/>
+                <Setter Property="TextColor" Value="{AppThemeBinding Light=#3498db, Dark=#5dade2}"/>
+                <Setter Property="TextDecorations" Value="Underline"/>
+            </Style>
+
+            <Style x:Key="IconStyle" TargetType="Image">
+                <Setter Property="HeightRequest" Value="18"/>
+                <Setter Property="WidthRequest" Value="18"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+                <Setter Property="Margin" Value="0,0,6,0"/>
+            </Style>
+
+            <Style x:Key="TagBadge" TargetType="Border">
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#e3f2fd, Dark=#263238}"/>
+                <Setter Property="Stroke" Value="Transparent"/>
+                <Setter Property="StrokeThickness" Value="0"/>
+                <Setter Property="StrokeShape" Value="RoundRectangle 12"/>
+                <Setter Property="Padding" Value="10,5"/>
+                <Setter Property="Margin" Value="0,0,8,0"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+            </Style>
+
+            <Style x:Key="SectionHeader" TargetType="Label">
+                <Setter Property="FontSize" Value="22"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
+                <Setter Property="Margin" Value="0,0,0,5"/>
+            </Style>
+
+            <Style x:Key="SectionDescription" TargetType="Label">
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}"/>
+                <Setter Property="LineBreakMode" Value="WordWrap"/>
+                <Setter Property="MaxLines" Value="2"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
     <Grid RowDefinitions="Auto,*,Auto" Padding="20">
-        <VerticalStackLayout Grid.Row="0" Margin="0,0,0,10">
-            <Label Text="Twoje projekty" FontSize="24" FontAttributes="Bold" Margin="0,0,0,5"/>
-            <Label Text="Zarządzaj swoimi projektami" FontSize="16" TextColor="Gray"/>
+        <VerticalStackLayout Grid.Row="0" Margin="0,0,0,16">
+            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto">
+                <Border Grid.Row="0" Grid.Column="0" 
+                       BackgroundColor="{AppThemeBinding Light=#EDE7F6, Dark=#4527A0}"
+                       WidthRequest="48" HeightRequest="48"
+                       StrokeThickness="0"
+                       StrokeShape="RoundRectangle 12">
+                    <Label Text="📁"
+                          FontSize="24"
+                          HorizontalOptions="Center"
+                          VerticalOptions="Center"/>
+                </Border>
+
+                <VerticalStackLayout Grid.Row="0" Grid.Column="1" 
+                                    Margin="16,0,0,0" 
+                                    VerticalOptions="Center">
+                    <Label Text="Twoje projekty" 
+                           Style="{StaticResource SectionHeader}"/>
+                    <Label Text="Zarządzaj swoimi projektami efektywnie" 
+                           Style="{StaticResource SectionDescription}"/>
+                </VerticalStackLayout>
+
+                <Border Grid.Row="1" Grid.ColumnSpan="2"
+                       BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2D2D2D}"
+                       StrokeThickness="0"
+                       StrokeShape="RoundRectangle 12"
+                       Padding="15,10"
+                       Margin="0,16,0,0">
+                    <HorizontalStackLayout HorizontalOptions="Start" Spacing="20">
+                        <VerticalStackLayout>
+                            <Label Text="Aktywne projekty" 
+                                   FontSize="12" 
+                                   TextColor="{StaticResource Gray500}"/>
+                            <Label Text="{Binding ProjectsCount}" 
+                                   FontSize="16" 
+                                   FontAttributes="Bold"/>
+                        </VerticalStackLayout>
+
+                        <BoxView WidthRequest="1" 
+                                HeightRequest="30" 
+                                Color="{StaticResource Gray300}" 
+                                VerticalOptions="Center"/>
+
+                        <VerticalStackLayout>
+                            <Label Text="Zadania" 
+                                   FontSize="12" 
+                                   TextColor="{StaticResource Gray500}"/>
+                            <Label Text="{Binding TasksCount}" 
+                                   FontSize="16" 
+                                   FontAttributes="Bold"/>
+                        </VerticalStackLayout>
+                    </HorizontalStackLayout>
+                </Border>
+            </Grid>
         </VerticalStackLayout>
 
         <RefreshView Grid.Row="1" x:Name="ProjectsRefreshView" IsRefreshing="{Binding IsRefreshing}">
             <CollectionView x:Name="ProjectsCollectionView" 
                             SelectionMode="Single" 
-                            EmptyView="Nie masz jeszcze żadnych projektów."
                             SelectionChanged="OnSelectionChanged">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Frame Margin="0,5" Padding="15" BorderColor="LightGray" CornerRadius="10">
-                            <Grid ColumnDefinitions="*,Auto">
-                                <VerticalStackLayout Grid.Column="0" Spacing="5">
-                                    <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold"/>
-                                    <Label Text="{Binding Description}" FontSize="14" LineBreakMode="TailTruncation" MaxLines="2"/>
-                                    <Label Text="{Binding GitHubUrl}" FontSize="12" TextColor="Blue" TextDecorations="Underline">
-                                        <Label.GestureRecognizers>
-                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=OpenGitHubCommand}" 
-                                                                  CommandParameter="{Binding}"/>
-                                        </Label.GestureRecognizers>
-                                    </Label>
-                                </VerticalStackLayout>
-                                <HorizontalStackLayout Grid.Column="1" Spacing="5" VerticalOptions="Center">
-                                    <Button Text="Edytuj" 
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=EditCommand}"
-                                            CommandParameter="{Binding}"
-                                            BackgroundColor="#3498db" 
-                                            TextColor="White"/>
-                                    <Button Text="Usuń" 
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=DeleteCommand}"
-                                            CommandParameter="{Binding}" 
-                                            BackgroundColor="#e74c3c" 
-                                            TextColor="White"/>
-                                </HorizontalStackLayout>
+                        <Frame Style="{StaticResource ProjectCard}"
+                               BackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}">
+                            <Grid RowDefinitions="Auto,Auto,Auto">
+                                <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+                                    <StackLayout Grid.Column="0" Orientation="Horizontal">
+                                        <Border BackgroundColor="{AppThemeBinding Light=#E1F5FE, Dark=#01579B}"
+                                               WidthRequest="40" HeightRequest="40"
+                                               StrokeThickness="0"
+                                               StrokeShape="RoundRectangle 12">
+                                            <Label Text="{Binding Name[0], FallbackValue=P}"
+                                                   FontSize="18" 
+                                                   FontAttributes="Bold"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center"
+                                                   TextColor="{AppThemeBinding Light=#0277BD, Dark=White}"/>
+                                        </Border>
+
+                                        <Label Text="{Binding Name}" 
+                                               FontSize="20" 
+                                               FontAttributes="Bold" 
+                                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                               VerticalOptions="Center"
+                                               Margin="12,0,0,0"/>
+                                    </StackLayout>
+
+                                    <Border Grid.Column="1"
+                                           BackgroundColor="{AppThemeBinding Light=#E8F5E9, Dark=#1B5E20}"
+                                           StrokeThickness="0"
+                                           StrokeShape="RoundRectangle 12"
+                                           Padding="10,5"
+                                           VerticalOptions="Center">
+                                        <Label Text="Aktywny" 
+                                               FontSize="12" 
+                                               TextColor="{AppThemeBinding Light=#2E7D32, Dark=White}"
+                                               FontAttributes="Bold"/>
+                                    </Border>
+                                </Grid>
+
+                                <StackLayout Grid.Row="1" Margin="0,16,0,16">
+                                    <Label Text="{Binding Description}" 
+                                           FontSize="15" 
+                                           LineBreakMode="TailTruncation" 
+                                           MaxLines="2"/>
+
+                                    <HorizontalStackLayout Margin="0,12,0,0" Spacing="8">
+                                        <Border Style="{StaticResource TagBadge}">
+                                            <StackLayout Orientation="Horizontal">
+                                                <Label Text="🛠️" Style="{StaticResource IconStyle}"/>
+                                                <Label Text="Rozwój" FontSize="12" VerticalOptions="Center"/>
+                                            </StackLayout>
+                                        </Border>
+
+                                        <Border Style="{StaticResource TagBadge}"
+                                                BackgroundColor="{AppThemeBinding Light=#F3E5F5, Dark=#4A148C}"
+                                                IsVisible="{Binding GitHubUrl, Converter={StaticResource StringToBoolConverter}}">
+                                            <StackLayout Orientation="Horizontal">
+                                                <Label Text="🌐" Style="{StaticResource IconStyle}"/>
+                                                <Label Text="GitHub"
+                                                       FontSize="12"
+                                                       VerticalOptions="Center"
+                                                       TextColor="{AppThemeBinding Light=#6A1B9A, Dark=White}">
+                                                    <Label.GestureRecognizers>
+                                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=OpenGitHubCommand}" 
+                                                                             CommandParameter="{Binding}"/>
+                                                    </Label.GestureRecognizers>
+                                                </Label>
+                                            </StackLayout>
+                                        </Border>
+                                    </HorizontalStackLayout>
+                                </StackLayout>
+
+                                <Grid Grid.Row="2" 
+                                      ColumnDefinitions="*,Auto" 
+                                      RowDefinitions="Auto,Auto">
+                                    <StackLayout Grid.Column="0" 
+                                                Grid.Row="0"
+                                                Orientation="Horizontal" 
+                                                VerticalOptions="Center">
+                                        <Label Text="📋" Style="{StaticResource IconStyle}"/>
+                                        <Label Text="{Binding UserTasks.Count, StringFormat='{0} zadań'}" 
+                                               FontSize="13" 
+                                               TextColor="{StaticResource Gray500}"
+                                               VerticalOptions="Center"/>
+                                    </StackLayout>
+
+                                    <HorizontalStackLayout Grid.Row="0"
+                                                          Grid.Column="1" 
+                                                          Spacing="8" 
+                                                          HorizontalOptions="End">
+                                        <Button Text="Edytuj" 
+                                                Style="{StaticResource ActionButton}"
+                                                BackgroundColor="{AppThemeBinding Light=#3498db, Dark=#2980b9}" 
+                                                TextColor="White"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=EditCommand}"
+                                                CommandParameter="{Binding}"/>
+
+                                        <Button Text="Usuń" 
+                                                Style="{StaticResource ActionButton}"
+                                                BackgroundColor="{AppThemeBinding Light=#e74c3c, Dark=#c0392b}" 
+                                                TextColor="White"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=DeleteCommand}"
+                                                CommandParameter="{Binding}"/>
+                                    </HorizontalStackLayout>
+                                </Grid>
                             </Grid>
                         </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
+
+                <CollectionView.EmptyView>
+                    <Grid RowDefinitions="Auto,Auto" VerticalOptions="Center" Padding="160">
+                        <Label Grid.Row="0"
+                               Text="📋"
+                               FontSize="80"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               Margin="0,0,0,20"/>
+
+                        <VerticalStackLayout Grid.Row="1" Spacing="20" HorizontalOptions="Center">
+                            <Label Text="Nie masz jeszcze projektów" 
+                                   FontSize="20" 
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}"
+                                   HorizontalOptions="Center"/>
+
+                            <Label Text="Utwórz swój pierwszy projekt, aby zorganizować zadania"
+                                   FontSize="14"
+                                   TextColor="{StaticResource Gray500}"
+                                   HorizontalOptions="Center"
+                                   HorizontalTextAlignment="Center"/>
+
+                            
+                        </VerticalStackLayout>
+                    </Grid>
+                </CollectionView.EmptyView>
             </CollectionView>
         </RefreshView>
 
-        <Button Grid.Row="2" 
-                Text="Dodaj nowy projekt" 
-                Command="{Binding AddCommand}"
-                BackgroundColor="#2ecc71" 
-                TextColor="White"
-                FontAttributes="Bold"
-                HeightRequest="50"
-                CornerRadius="25"
-                Margin="0,15,0,0"/>
+        <Border Grid.Row="2"
+                WidthRequest="60" HeightRequest="60"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                StrokeThickness="0"
+                BackgroundColor="{StaticResource Primary}"
+                StrokeShape="RoundRectangle 30"
+                Margin="0,0,10,0">
+            <Button Text="+"
+                    Command="{Binding AddCommand}"
+                    FontSize="28"
+                    FontAttributes="Bold"
+                    BackgroundColor="Transparent"
+                    TextColor="White"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center" />
+        </Border>
     </Grid>
 </ContentPage>

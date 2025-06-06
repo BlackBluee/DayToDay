@@ -23,6 +23,7 @@ namespace daytoday
             builder.Services.AddSingleton<AuthService>();
             builder.Services.AddSingleton<ProjectService>();
             builder.Services.AddSingleton<CalendarEventService>();
+            builder.Services.AddSingleton<TaskService>();
 
 
 #if DEBUG

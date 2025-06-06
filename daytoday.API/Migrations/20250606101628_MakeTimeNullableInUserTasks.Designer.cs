@@ -12,8 +12,8 @@ using daytoday.API.Data;
 namespace daytoday.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250604200930_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250606101628_MakeTimeNullableInUserTasks")]
+    partial class MakeTimeNullableInUserTasks
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -299,11 +299,9 @@ namespace daytoday.API.Migrations
 
             modelBuilder.Entity("daytoday.Core.Models.UserTask", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Category")
                         .IsRequired()
@@ -334,7 +332,6 @@ namespace daytoday.API.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Time")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Title")

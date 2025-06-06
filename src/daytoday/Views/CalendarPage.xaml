@@ -1,64 +1,346 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:local="clr-namespace:daytoday.Views"
              x:Class="daytoday.Views.CalendarPage"
+             BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource OffBlack}}"
              Title="Kalendarz">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="FormLabel" TargetType="Label">
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="Margin" Value="0,10,0,5"/>
+            </Style>
+            <Style x:Key="FormEntry" TargetType="Entry">
+                <Setter Property="Margin" Value="0,0,0,15"/>
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray600}}"/>
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"/>
+            </Style>
+            <Style x:Key="FormEditor" TargetType="Editor">
+                <Setter Property="AutoSize" Value="TextChanges"/>
+                <Setter Property="Margin" Value="0,0,0,15"/>
+                <Setter Property="HeightRequest" Value="100"/>
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray600}}"/>
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"/>
+            </Style>
+            <Style x:Key="NavButton" TargetType="Button">
+                <Setter Property="WidthRequest" Value="44"/>
+                <Setter Property="HeightRequest" Value="44"/>
+                <Setter Property="CornerRadius" Value="22"/>
+                <Setter Property="Padding" Value="0"/>
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource Gray600}}"/>
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+            </Style>
+            <Style x:Key="EventCard" TargetType="Border">
+                <Setter Property="Padding" Value="16"/>
+                <Setter Property="Margin" Value="0,8"/>
+                <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"/>
+                <Setter Property="StrokeThickness" Value="1"/>
+                <Setter Property="StrokeShape" Value="RoundRectangle 16"/>
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=White, Dark=#1E1E1E}"/>
+                <Setter Property="Shadow" Value="True"/>
+            </Style>
+            <Style x:Key="CalendarDayStyle" TargetType="Border">
+                <Setter Property="WidthRequest" Value="44"/>
+                <Setter Property="HeightRequest" Value="44"/>
+                <Setter Property="Stroke" Value="Transparent"/>
+                <Setter Property="StrokeThickness" Value="0"/>
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#F5F5F5, Dark=#333333}"/>
+                <Setter Property="Padding" Value="0"/>
+                <Setter Property="StrokeShape" Value="RoundRectangle 10"/>
+                <Setter Property="HorizontalOptions" Value="Center"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+                <Setter Property="Margin" Value="2"/>
+            </Style>
+            <Style x:Key="TodayStyle" TargetType="Border" BasedOn="{StaticResource CalendarDayStyle}">
+                <Setter Property="BackgroundColor" Value="{StaticResource Primary}"/>
+                <Setter Property="StrokeThickness" Value="2"/>
+                <Setter Property="Stroke" Value="{AppThemeBinding Light=#DFD8F7, Dark=#7048e8}"/>
+            </Style>
+            <Style x:Key="DayNumberStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="HorizontalOptions" Value="Center"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+                <Setter Property="HorizontalTextAlignment" Value="Center"/>
+                <Setter Property="VerticalTextAlignment" Value="Center"/>
+            </Style>
+            <Style x:Key="EventMarkerStyle" TargetType="BoxView">
+                <Setter Property="HeightRequest" Value="6"/>
+                <Setter Property="WidthRequest" Value="6"/>
+                <Setter Property="CornerRadius" Value="3"/>
+                <Setter Property="HorizontalOptions" Value="Center"/>
+                <Setter Property="BackgroundColor" Value="{StaticResource Primary}"/>
+                <Setter Property="Margin" Value="0,2,0,0"/>
+            </Style>
+            <Style x:Key="ActionButton" TargetType="Button">
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="Padding" Value="12,6"/>
+                <Setter Property="Margin" Value="5,0,0,0"/>
+                <Setter Property="CornerRadius" Value="6"/>
+                <Setter Property="HeightRequest" Value="36"/>
+                <Setter Property="WidthRequest" Value="86"/>
+            </Style>
+            <Style x:Key="HeaderIconContainer" TargetType="Border">
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#E8F5E9, Dark=#1B5E20}"/>
+                <Setter Property="WidthRequest" Value="48"/>
+                <Setter Property="HeightRequest" Value="48"/>
+                <Setter Property="StrokeThickness" Value="0"/>
+                <Setter Property="StrokeShape" Value="RoundRectangle 12"/>
+                <Setter Property="HorizontalOptions" Value="Start"/>
+            </Style>
+            <Style x:Key="HeaderIcon" TargetType="Label">
+                <Setter Property="FontSize" Value="24"/>
+                <Setter Property="HorizontalOptions" Value="Center"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+            </Style>
+            <Style x:Key="SectionHeader" TargetType="Label">
+                <Setter Property="FontSize" Value="22"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
+                <Setter Property="Margin" Value="0,0,0,5"/>
+            </Style>
+            <Style x:Key="SectionDescription" TargetType="Label">
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}"/>
+                <Setter Property="LineBreakMode" Value="WordWrap"/>
+                <Setter Property="MaxLines" Value="2"/>
+            </Style>
+            <Style x:Key="DayOfWeekHeader" TargetType="Label">
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="HorizontalOptions" Value="Center"/>
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
-    <Grid RowDefinitions="Auto,*,Auto">
-        <HorizontalStackLayout Grid.Row="0" HorizontalOptions="Center" Spacing="10" Margin="0,10,0,0">
-            <Button Text="&lt;" Command="{Binding PreviousMonthCommand}" WidthRequest="40" />
-            <Label Text="{Binding CurrentMonthYear}" FontSize="20" FontAttributes="Bold" VerticalOptions="Center" />
-            <Button Text="&gt;" Command="{Binding NextMonthCommand}" WidthRequest="40" />
-        </HorizontalStackLayout>
+    <Grid RowDefinitions="Auto,*,Auto" Padding="20">
+        <VerticalStackLayout Grid.Row="0" Margin="0,0,0,16">
+            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto">
+                <Border Grid.Row="0" Grid.Column="0" 
+                       Style="{StaticResource HeaderIconContainer}">
+                    <Label Text="🗓️"
+                          Style="{StaticResource HeaderIcon}"/>
+                </Border>
 
-        <RefreshView Grid.Row="1" Command="{Binding RefreshCommand}" IsRefreshing="{Binding IsRefreshing}">
-            <CollectionView x:Name="EventsCollectionView" 
-                            ItemsSource="{Binding Events}"
-                            SelectionMode="Single"
-                            SelectionChanged="OnEventSelected"
-                            EmptyView="Brak wydarzeń w wybranym miesiącu">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Padding="10" ColumnDefinitions="Auto,*,Auto">
-                            <BoxView Grid.Column="0" 
-                                     WidthRequest="4" 
-                                     HeightRequest="40" 
-                                     Color="{StaticResource Primary}" 
-                                     VerticalOptions="Fill" />
-                            <VerticalStackLayout Grid.Column="1" Padding="15,0,0,0" VerticalOptions="Center">
-                                <Label Text="{Binding Name}" FontAttributes="Bold" />
-                                <Label Text="{Binding StartDate, StringFormat='{0:dd.MM.yyyy HH:mm}'}" FontSize="12" TextColor="Gray" />
-                                <Label Text="{Binding Description}" 
-       LineBreakMode="TailTruncation" 
-       MaxLines="1" 
-       IsVisible="{Binding Description, Converter={StaticResource BoolConverter}, ConverterParameter=IsNotNullOrEmpty}" />
+                <VerticalStackLayout Grid.Row="0" Grid.Column="1" 
+                                    Margin="16,0,0,0" 
+                                    VerticalOptions="Center">
+                    <Label Text="Mój kalendarz" 
+                           Style="{StaticResource SectionHeader}"/>
+                    <Label Text="Organizuj swoje wydarzenia i spotkania" 
+                           Style="{StaticResource SectionDescription}"/>
+                </VerticalStackLayout>
 
+                <Border Grid.Row="1" Grid.ColumnSpan="2"
+                       BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2D2D2D}"
+                       StrokeThickness="0"
+                       StrokeShape="RoundRectangle 12"
+                       Padding="10"
+                       Margin="0,16,0,0">
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <Button Grid.Column="0"
+                                Text="&lt;"
+                                Command="{Binding PreviousMonthCommand}"
+                                Style="{StaticResource NavButton}"/>
 
-                            </VerticalStackLayout>
-                            <HorizontalStackLayout Grid.Column="2" VerticalOptions="Center" Spacing="10">
-                                <ImageButton Source="edit.png" 
-                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=EditCommand}"
-                                             CommandParameter="{Binding}" 
-                                             WidthRequest="20" 
-                                             HeightRequest="20" />
-                                <ImageButton Source="delete.png" 
-                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=DeleteCommand}"
-                                             CommandParameter="{Binding}" 
-                                             WidthRequest="20" 
-                                             HeightRequest="20" />
-                            </HorizontalStackLayout>
+                        <Label Grid.Column="1"
+                               Text="{Binding CurrentMonthYear}"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
+
+                        <Button Grid.Column="2"
+                                Text="&gt;"
+                                Command="{Binding NextMonthCommand}"
+                                Style="{StaticResource NavButton}"/>
+                    </Grid>
+                </Border>
+            </Grid>
+        </VerticalStackLayout>
+
+        <Grid Grid.Row="1" RowDefinitions="Auto,*" Padding="0" Margin="0,10,0,0">
+            <Border Grid.Row="0"
+                   BackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}"
+                   StrokeThickness="1"
+                   Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                   StrokeShape="RoundRectangle 16"
+                   Padding="10,15"
+                   Margin="0,0,0,20">
+                <Grid RowDefinitions="Auto,Auto">
+                    <Grid Grid.Row="0" ColumnDefinitions="*,*,*,*,*,*,*" Margin="0,0,0,10">
+                        <Label Grid.Column="0" Text="Pn" Style="{StaticResource DayOfWeekHeader}"/>
+                        <Label Grid.Column="1" Text="Wt" Style="{StaticResource DayOfWeekHeader}"/>
+                        <Label Grid.Column="2" Text="Śr" Style="{StaticResource DayOfWeekHeader}"/>
+                        <Label Grid.Column="3" Text="Cz" Style="{StaticResource DayOfWeekHeader}"/>
+                        <Label Grid.Column="4" Text="Pt" Style="{StaticResource DayOfWeekHeader}"/>
+                        <Label Grid.Column="5" Text="Sb" Style="{StaticResource DayOfWeekHeader}"/>
+                        <Label Grid.Column="6" Text="Nd" Style="{StaticResource DayOfWeekHeader}" 
+                               TextColor="{AppThemeBinding Light=Red, Dark=#ff6666}"/>
+                    </Grid>
+
+                    <Grid x:Name="CalendarGrid" Grid.Row="1" RowSpacing="4" ColumnSpacing="2"/>
+                </Grid>
+            </Border>
+
+            <RefreshView Grid.Row="1" Command="{Binding RefreshCommand}" 
+                       IsRefreshing="{Binding IsRefreshing}" Margin="0">
+                <CollectionView x:Name="EventsCollectionView"
+                              ItemsSource="{Binding Events}"
+                              SelectionMode="Single"
+                              SelectionChanged="OnEventSelected">
+                    <CollectionView.Header>
+                        <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,10">
+                            <Label Grid.Column="0"
+                                   Text="Wydarzenia"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
+
+                            <Button Grid.Column="1"
+                                    Text="Dodaj"
+                                    Command="{Binding AddCommand}"
+                                    BackgroundColor="{StaticResource Primary}"
+                                    TextColor="White"
+                                    CornerRadius="8"
+                                    HeightRequest="36"
+                                    Padding="12,0"
+                                    HorizontalOptions="End"/>
                         </Grid>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-        </RefreshView>
+                    </CollectionView.Header>
 
-        <Button Grid.Row="2" 
-                Text="Dodaj wydarzenie" 
-                Command="{Binding AddCommand}" 
-                HorizontalOptions="Center" 
-                VerticalOptions="End" 
-                Margin="0,0,0,20" />
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Style="{StaticResource EventCard}">
+                                <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="Auto,*,Auto">
+                                    <Border Grid.Row="0"
+                                           Grid.Column="0"
+                                           Grid.RowSpan="2"
+                                           BackgroundColor="{Binding Source={RelativeSource AncestorType={x:Type local:CalendarPage}}, Path=GetEventColor}"
+                                           StrokeThickness="0"
+                                           StrokeShape="RoundRectangle 12"
+                                           WidthRequest="44" 
+                                           HeightRequest="44"
+                                           VerticalOptions="Start">
+                                        <Label Text="{Binding Source={RelativeSource AncestorType={x:Type local:CalendarPage}}, Path=GetEventEmoji}"
+                                               FontSize="20"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center"
+                                               TextColor="White"/>
+                                    </Border>
+
+                                    <VerticalStackLayout Grid.Row="0" Grid.Column="1" Margin="15,0,0,0">
+                                        <Label Text="{Binding Name}"
+                                               FontAttributes="Bold"
+                                               FontSize="16"
+                                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
+
+                                        <HorizontalStackLayout Spacing="8" Margin="0,5,0,0">
+                                            <Label Text="{Binding StartDate, StringFormat='{0:dd.MM.yyyy HH:mm}'}"
+                                                   FontSize="12"
+                                                   TextColor="{StaticResource Gray500}"/>
+                                            <Label Text="→" FontSize="12" TextColor="{StaticResource Gray500}"/>
+                                            <Label Text="{Binding EndDate, StringFormat='{0:dd.MM.yyyy HH:mm}'}"
+                                                   FontSize="12"
+                                                   TextColor="{StaticResource Gray500}"/>
+                                        </HorizontalStackLayout>
+                                    </VerticalStackLayout>
+
+                                    <Border Grid.Row="0"
+                                            Grid.Column="2"
+                                            BackgroundColor="{StaticResource Secondary}"
+                                            StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 6"
+                                            Padding="10,5"
+                                            VerticalOptions="Start"
+                                            HorizontalOptions="End"
+                                            IsVisible="{Binding IsAllDay}">
+                                        <Label Text="Cały dzień"
+                                               FontSize="12"
+                                               TextColor="{StaticResource Primary}"
+                                               FontAttributes="Bold"/>
+                                    </Border>
+                                    <Grid Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="15,10,0,15">
+                                        <VerticalStackLayout Spacing="5">
+                                            <Label Text="{Binding Description}"
+                                                  LineBreakMode="TailTruncation"
+                                                  MaxLines="2"
+                                                  IsVisible="{Binding Description, FallbackValue=False}"/>
+
+                                            <HorizontalStackLayout Spacing="6" IsVisible="{Binding Location, FallbackValue=False}">
+                                                <Label Text="📍" FontSize="12" VerticalOptions="Center"/>
+                                                <Label Text="{Binding Location}"
+                                                      FontSize="12"
+                                                      TextColor="{StaticResource Gray500}"
+                                                      VerticalOptions="Center"/>
+                                            </HorizontalStackLayout>
+                                        </VerticalStackLayout>
+                                    </Grid>
+
+                                    <HorizontalStackLayout Grid.Row="2"
+                                                         Grid.Column="0"
+                                                         Grid.ColumnSpan="3"
+                                                         Spacing="8"
+                                                         HorizontalOptions="End">
+                                        <Button Text="Edytuj" 
+                                               Style="{StaticResource ActionButton}"
+                                               BackgroundColor="{AppThemeBinding Light=#3498db, Dark=#2980b9}"
+                                               TextColor="White"
+                                               Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=EditCommand}"
+                                               CommandParameter="{Binding}"/>
+
+                                        <Button Text="Usuń" 
+                                               Style="{StaticResource ActionButton}"
+                                               BackgroundColor="{AppThemeBinding Light=#e74c3c, Dark=#c0392b}"
+                                               TextColor="White"
+                                               Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=DeleteCommand}"
+                                               CommandParameter="{Binding}"/>
+                                    </HorizontalStackLayout>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+
+                    <CollectionView.EmptyView>
+                        <Grid RowDefinitions="Auto,Auto" VerticalOptions="Center" Padding="20">
+                            <Label Grid.Row="0" 
+                                  Text="🗓️"
+                                  FontSize="80"
+                                  HorizontalOptions="Center"
+                                  VerticalOptions="Center"
+                                  Margin="0,0,0,20"/>
+
+                            <VerticalStackLayout Grid.Row="1" Spacing="20" HorizontalOptions="Center">
+                                <Label Text="Brak wydarzeń" 
+                                      FontSize="20" 
+                                      TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}"
+                                      HorizontalOptions="Center"/>
+
+                                <Label Text="Dodaj nowe wydarzenie, aby rozpocząć planowanie"
+                                       FontSize="14"
+                                       TextColor="{StaticResource Gray500}"
+                                       HorizontalOptions="Center"
+                                       HorizontalTextAlignment="Center"/>
+
+                                
+                            </VerticalStackLayout>
+                        </Grid>
+                    </CollectionView.EmptyView>
+                </CollectionView>
+            </RefreshView>
+        </Grid>
+
+        <ActivityIndicator Grid.Row="1" 
+                         IsRunning="{Binding IsBusy}" 
+                         IsVisible="{Binding IsBusy}" 
+                         HorizontalOptions="Center" 
+                         VerticalOptions="Center"
+                         Scale="1.5"/>
     </Grid>
 </ContentPage>

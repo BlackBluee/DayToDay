@@ -47,14 +47,21 @@ namespace daytoday.Services
             var token = _authService.GetToken();
             if (!string.IsNullOrEmpty(token))
                 _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+            task.Id = Guid.Empty;
+
             var response = await _httpClient.PostAsJsonAsync("/api/task", task);
             var responseContent = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
             {
                 throw new Exception($"Failed to create task: {response.StatusCode} {response.ReasonPhrase} - {responseContent}");
             }
-            var taskId = JsonConvert.DeserializeObject<Guid>(responseContent);
-            return await GetTaskAsync(taskId);
+
+            var createdTask = JsonConvert.DeserializeObject<TaskDto>(responseContent);
+            if (createdTask == null)
+                throw new Exception("Failed to deserialize created task.");
+
+            return createdTask;
         }
 
         public async Task<TaskDto> UpdateTaskAsync(TaskDto task)

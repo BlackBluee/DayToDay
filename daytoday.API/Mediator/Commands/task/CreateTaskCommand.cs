@@ -9,11 +9,12 @@ namespace daytoday.API.Mediator.Commands.task
 {
     public class CreateTaskCommand : IRequest<TaskDto>
     {
-        public string Title { get; set; }
-        public string Category { get; set; }
-        public string Description { get; set; }
-        public string Status { get; set; }
-        public string Priority { get; set; }
+        public required string Title { get; set; }
+        public string? Category { get; set; }
+        public string? Description { get; set; }
+        public string? Status { get; set; }
+        public string? Priority { get; set; }
+        public Guid? ProjectId { get; set; }
     }
 
 
@@ -43,20 +44,22 @@ namespace daytoday.API.Mediator.Commands.task
 
             var task = new UserTask
             {
+                // Use sequential ID instead of Guid for this entity
+                // PostgreSQL is expecting an integer, not a UUID
+                // Id field will be automatically set by the database
                 Title = request.Title,
                 Category = request.Category ?? string.Empty,
                 Description = request.Description ?? string.Empty,
                 Status = request.Status ?? "Pending",
                 Priority = request.Priority ?? "Normal",
-                Created = DateTime.Now,
-                Due = DateTime.Now.AddDays(7), 
-                Updated = DateTime.Now,
-                UserId = userId
+                Created = DateTime.UtcNow,
+                Due = DateTime.UtcNow.AddDays(7),
+                Updated = DateTime.UtcNow,
+                UserId = userId,
             };
 
             _context.UserTasks.Add(task);
             await _context.SaveChangesAsync(cancellationToken);
-
 
             return new TaskDto
             {
