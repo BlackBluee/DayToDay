@@ -1,38 +1,354 @@
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:daytoday.Views"
              x:Class="daytoday.Views.TasksPage"
+             BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource OffBlack}}"
              Title="Zadania">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="FormLabel" TargetType="Label">
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="Margin" Value="0,10,0,5"/>
+            </Style>
 
-    <Grid RowDefinitions="Auto,*,Auto" Padding="10">
-        <!-- Wyszukiwarka -->
-        <SearchBar Grid.Row="0" 
-                   Placeholder="Szukaj zadań..."
-                   Margin="0,0,0,10"
-                   BackgroundColor="#E0E0E0"
-                   PlaceholderColor="#757575"
-                   TextColor="Black"/>
+            <Style x:Key="FormEntry" TargetType="Entry">
+                <Setter Property="Margin" Value="0,0,0,15"/>
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray600}}"/>
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"/>
+            </Style>
 
-        <!-- Lista zadań -->
-        <CollectionView x:Name="TasksCollectionView" Grid.Row="1" Margin="0,0,0,10">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Frame BackgroundColor="#021709" CornerRadius="10" Padding="10" Margin="0,0,0,10">
-                        <VerticalStackLayout>
-                            <Label Text="{Binding Title}" FontSize="16" FontAttributes="Bold"/>
-                            <Label Text="{Binding Category}" FontSize="14" TextColor="Gray"/>
-                            <Label Text="{Binding Time}" FontSize="14" TextColor="Gray"/>
+            <Style x:Key="FormEditor" TargetType="Editor">
+                <Setter Property="AutoSize" Value="TextChanges"/>
+                <Setter Property="Margin" Value="0,0,0,15"/>
+                <Setter Property="HeightRequest" Value="100"/>
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray600}}"/>
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"/>
+            </Style>
+
+            <Style x:Key="FormPicker" TargetType="Picker">
+                <Setter Property="Margin" Value="0,0,0,15"/>
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray600}}"/>
+            </Style>
+
+            <Style x:Key="ActionButton" TargetType="Button">
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="Padding" Value="12,6"/>
+                <Setter Property="Margin" Value="5,0,0,0"/>
+                <Setter Property="CornerRadius" Value="6"/>
+                <Setter Property="HeightRequest" Value="36"/>
+                <Setter Property="WidthRequest" Value="86"/>
+            </Style>
+
+            <Style x:Key="PrimaryActionButton" TargetType="Button">
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="Padding" Value="15,10"/>
+                <Setter Property="CornerRadius" Value="25"/>
+                <Setter Property="HeightRequest" Value="50"/>
+                <Setter Property="BackgroundColor" Value="{StaticResource Primary}"/>
+                <Setter Property="TextColor" Value="White"/>
+            </Style>
+
+            <Style x:Key="TaskCard" TargetType="Frame">
+                <Setter Property="Padding" Value="18"/>
+                <Setter Property="Margin" Value="0,8"/>
+                <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"/>
+                <Setter Property="CornerRadius" Value="16"/>
+                <Setter Property="HasShadow" Value="True"/>
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=White, Dark=#1E1E1E}"/>
+            </Style>
+
+            <Style x:Key="StatusBadge" TargetType="Border">
+                <Setter Property="Stroke" Value="Transparent"/>
+                <Setter Property="StrokeThickness" Value="0"/>
+                <Setter Property="StrokeShape" Value="RoundRectangle 12"/>
+                <Setter Property="Padding" Value="10,5"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+            </Style>
+
+            <Style x:Key="IconStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="18"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+                <Setter Property="Margin" Value="0,0,6,0"/>
+            </Style>
+
+            <Style x:Key="TagBadge" TargetType="Border">
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#e3f2fd, Dark=#263238}"/>
+                <Setter Property="Stroke" Value="Transparent"/>
+                <Setter Property="StrokeThickness" Value="0"/>
+                <Setter Property="StrokeShape" Value="RoundRectangle 12"/>
+                <Setter Property="Padding" Value="10,5"/>
+                <Setter Property="Margin" Value="0,0,8,0"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+            </Style>
+
+            <Style x:Key="SectionHeader" TargetType="Label">
+                <Setter Property="FontSize" Value="22"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
+                <Setter Property="Margin" Value="0,0,0,5"/>
+            </Style>
+
+            <Style x:Key="SectionDescription" TargetType="Label">
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}"/>
+                <Setter Property="LineBreakMode" Value="WordWrap"/>
+                <Setter Property="MaxLines" Value="2"/>
+            </Style>
+
+            <Style x:Key="DateText" TargetType="Label">
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="TextColor" Value="{StaticResource Gray500}"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,*,Auto" Padding="20">
+        <VerticalStackLayout Grid.Row="0" Margin="0,0,0,16">
+            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto">
+                <Border Grid.Row="0" Grid.Column="0" 
+                       BackgroundColor="{AppThemeBinding Light=#E8F5E9, Dark=#1B5E20}"
+                       WidthRequest="48" HeightRequest="48"
+                       StrokeThickness="0"
+                       StrokeShape="RoundRectangle 12">
+                    <Label Text="📝"
+                          FontSize="24"
+                          HorizontalOptions="Center"
+                          VerticalOptions="Center"/>
+                </Border>
+
+                <VerticalStackLayout Grid.Row="0" Grid.Column="1" 
+                                    Margin="16,0,0,0" 
+                                    VerticalOptions="Center">
+                    <Label Text="Moje zadania" 
+                           Style="{StaticResource SectionHeader}"/>
+                    <Label Text="Śledź i zarządzaj swoimi zadaniami" 
+                           Style="{StaticResource SectionDescription}"/>
+                </VerticalStackLayout>
+
+                <Border Grid.Row="1" Grid.ColumnSpan="2"
+                       BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2D2D2D}"
+                       StrokeThickness="0"
+                       StrokeShape="RoundRectangle 12"
+                       Padding="15,10"
+                       Margin="0,16,0,0">
+                    <Grid ColumnDefinitions="*,Auto,*,Auto,*">
+                        <VerticalStackLayout Grid.Column="0" HorizontalOptions="Center">
+                            <Label Text="Wszystkie" 
+                                   FontSize="12" 
+                                   TextColor="{StaticResource Gray500}"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="{Binding AllTasksCount}" 
+                                   FontSize="16" 
+                                   FontAttributes="Bold"
+                                   HorizontalOptions="Center"/>
                         </VerticalStackLayout>
-                    </Frame>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
 
-        <!-- Przycisk dodawania -->
-        <Button Grid.Row="2" 
-                Text="+ Dodaj nowe zadanie" 
-                BackgroundColor="#4CAF50"
-                TextColor="White"
-                CornerRadius="10"
-                HeightRequest="50"/>
+                        <BoxView Grid.Column="1"
+                                WidthRequest="1" 
+                                HeightRequest="30" 
+                                Color="{StaticResource Gray300}" 
+                                VerticalOptions="Center"/>
+
+                        <VerticalStackLayout Grid.Column="2" HorizontalOptions="Center">
+                            <Label Text="W trakcie" 
+                                   FontSize="12" 
+                                   TextColor="{StaticResource Gray500}"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="{Binding InProgressTasksCount}" 
+                                   FontSize="16" 
+                                   FontAttributes="Bold"
+                                   HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+
+                        <BoxView Grid.Column="3"
+                                WidthRequest="1" 
+                                HeightRequest="30" 
+                                Color="{StaticResource Gray300}" 
+                                VerticalOptions="Center"/>
+
+                        <VerticalStackLayout Grid.Column="4" HorizontalOptions="Center">
+                            <Label Text="Ukończone" 
+                                   FontSize="12" 
+                                   TextColor="{StaticResource Gray500}"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="{Binding CompletedTasksCount}" 
+                                   FontSize="16" 
+                                   FontAttributes="Bold"
+                                   HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+            </Grid>
+        </VerticalStackLayout>
+
+        <RefreshView Grid.Row="1" x:Name="TasksRefreshView"
+                    IsRefreshing="{Binding IsRefreshing}" 
+                    Command="{Binding RefreshCommand}">
+            <CollectionView x:Name="TasksCollectionView"
+                          ItemsSource="{Binding Tasks}" 
+                          SelectionMode="Single"
+                          SelectionChanged="OnSelectionChanged">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Style="{StaticResource TaskCard}">
+                            <Grid RowDefinitions="Auto,Auto,Auto">
+                                <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+                                    <StackLayout Grid.Column="0" Orientation="Horizontal">
+                                        <Border BackgroundColor="{Binding Source={RelativeSource AncestorType={x:Type local:TasksPage}}, Path=GetPriorityColor, ConverterParameter={Binding Priority}}"
+                                               WidthRequest="40" HeightRequest="40"
+                                               StrokeThickness="0"
+                                               StrokeShape="RoundRectangle 12">
+                                            <Label Text="{Binding Title[0], FallbackValue=T}"
+                                                   FontSize="18" 
+                                                   FontAttributes="Bold"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center"
+                                                   TextColor="White"/>
+                                        </Border>
+
+                                        <Label Text="{Binding Title}" 
+                                               FontSize="18" 
+                                               FontAttributes="Bold"
+                                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                               VerticalOptions="Center"
+                                               LineBreakMode="TailTruncation"
+                                               Margin="12,0,0,0"/>
+                                    </StackLayout>
+
+                                    <Border Grid.Column="1"
+                                           Style="{StaticResource StatusBadge}"
+                                           BackgroundColor="{Binding Source={RelativeSource AncestorType={x:Type local:TasksPage}}, Path=GetStatusColorForBinding, ConverterParameter={Binding Status}}">
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label Text="{Binding Source={RelativeSource AncestorType={x:Type local:TasksPage}}, Path=GetStatusEmoji, ConverterParameter={Binding Status}}"
+                                                  FontSize="12" 
+                                                  TextColor="White"
+                                                  Margin="0,0,4,0"/>
+
+                                            <Label Text="{Binding Status}" 
+                                                  FontSize="12" 
+                                                  TextColor="White"
+                                                  FontAttributes="Bold"/>
+                                        </StackLayout>
+                                    </Border>
+                                </Grid>
+
+                                <Grid Grid.Row="1" Margin="0,16,0,16" ColumnDefinitions="*,Auto">
+                                    <Label Grid.Column="0"
+                                          Text="{Binding Description}" 
+                                          FontSize="14" 
+                                          LineBreakMode="TailTruncation"
+                                          MaxLines="2"/>
+
+                                    <StackLayout Grid.Column="1" Orientation="Horizontal" HorizontalOptions="End">
+                                        <Label Text="📅" FontSize="14" VerticalOptions="Center"/>
+                                        <Label Text="{Binding Due, StringFormat='{0:dd.MM.yyyy}'}" 
+                                               Style="{StaticResource DateText}"
+                                               VerticalOptions="Center"/>
+                                    </StackLayout>
+                                </Grid>
+
+                                <Grid Grid.Row="2" ColumnDefinitions="*,Auto">
+                                    <HorizontalStackLayout Grid.Column="0" Spacing="8">
+                                        <Border Style="{StaticResource TagBadge}" 
+                                               BackgroundColor="{AppThemeBinding Light=#e3f2fd, Dark=#263238}">
+                                            <StackLayout Orientation="Horizontal">
+                                                <Label Text="{Binding Source={RelativeSource AncestorType={x:Type local:TasksPage}}, Path=GetCategoryEmoji, ConverterParameter={Binding Category}}" 
+                                                       Style="{StaticResource IconStyle}"/>
+                                                <Label Text="{Binding Category}" 
+                                                      FontSize="12" 
+                                                      VerticalOptions="Center"
+                                                      TextColor="{AppThemeBinding Light=#0277BD, Dark=White}"/>
+                                            </StackLayout>
+                                        </Border>
+
+                                        <Border Style="{StaticResource TagBadge}"
+                                               BackgroundColor="{AppThemeBinding Light=#FFF3E0, Dark=#3E2723}">
+                                            <StackLayout Orientation="Horizontal">
+                                                <Label Text="{Binding Source={RelativeSource AncestorType={x:Type local:TasksPage}}, Path=GetPriorityEmoji, ConverterParameter={Binding Priority}}" 
+                                                       Style="{StaticResource IconStyle}"/>
+                                                <Label Text="{Binding Priority}" 
+                                                      FontSize="12" 
+                                                      VerticalOptions="Center"
+                                                      TextColor="{AppThemeBinding Light=#E65100, Dark=White}"/>
+                                            </StackLayout>
+                                        </Border>
+                                    </HorizontalStackLayout>
+
+                                    <HorizontalStackLayout Grid.Column="1" Spacing="8" HorizontalOptions="End">
+                                        <Button Text="Edytuj" 
+                                               Style="{StaticResource ActionButton}"
+                                               BackgroundColor="{AppThemeBinding Light=#3498db, Dark=#2980b9}"
+                                               TextColor="White"
+                                               Command="{Binding Source={RelativeSource AncestorType={x:Type local:TasksPage}}, Path=EditCommand}"
+                                               CommandParameter="{Binding .}" />
+
+                                        <Button Text="Usuń" 
+                                               Style="{StaticResource ActionButton}"
+                                               BackgroundColor="{AppThemeBinding Light=#e74c3c, Dark=#c0392b}"
+                                               TextColor="White"
+                                               Command="{Binding Source={RelativeSource AncestorType={x:Type local:TasksPage}}, Path=DeleteCommand}" 
+                                               CommandParameter="{Binding .}" />
+                                    </HorizontalStackLayout>
+                                </Grid>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+                <CollectionView.EmptyView>
+                    <Grid RowDefinitions="Auto,Auto" VerticalOptions="Center" Padding="160">
+                        <Label Grid.Row="0" 
+                              Text="📋"
+                              FontSize="80"
+                              HorizontalOptions="Center"
+                              VerticalOptions="Center"
+                              Margin="0,0,0,20"/>
+
+                        <VerticalStackLayout Grid.Row="1" Spacing="20" HorizontalOptions="Center">
+                            <Label Text="Nie masz jeszcze zadań" 
+                                  FontSize="20" 
+                                  TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}"
+                                  HorizontalOptions="Center"/>
+
+                            <Label Text="Dodaj pierwsze zadanie, aby zacząć organizację"
+                                   FontSize="14"
+                                   TextColor="{StaticResource Gray500}"
+                                   HorizontalOptions="Center"
+                                   HorizontalTextAlignment="Center"/>
+
+                            
+                        </VerticalStackLayout>
+                    </Grid>
+                </CollectionView.EmptyView>
+            </CollectionView>
+        </RefreshView>
+
+        <Border Grid.Row="2"
+                WidthRequest="60" HeightRequest="60"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                StrokeThickness="0"
+                BackgroundColor="{StaticResource Primary}"
+                StrokeShape="RoundRectangle 30"
+                Margin="0,0,10,0">
+            <Button Text="+"
+                    Command="{Binding AddCommand}"
+                    FontSize="28"
+                    FontAttributes="Bold"
+                    BackgroundColor="Transparent"
+                    TextColor="White"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center" />
+        </Border>
+
+        <ActivityIndicator Grid.Row="1" 
+                         IsRunning="{Binding IsBusy}" 
+                         IsVisible="{Binding IsBusy}" 
+                         HorizontalOptions="Center" 
+                         VerticalOptions="Center"
+                         Scale="1.5"/>
     </Grid>
 </ContentPage>

@@ -15,9 +15,6 @@ namespace daytoday
             {
                 MainPage = new NavigationPage(new LoginPage());
             }
-
         }
-
-        
     }
 }
